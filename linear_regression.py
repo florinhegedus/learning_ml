@@ -30,7 +30,7 @@ def get_dataloader(data_arrays, batch_size, shuffle):
 
 def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int, visu: bool=True):
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.0001)
+    optimizer = optim.SGD(model.parameters(), lr=0.001)
 
     for epoch in range(epochs):
         # Train loop

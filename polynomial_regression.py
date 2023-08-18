@@ -13,15 +13,15 @@ class PolynomialRegressionModel(nn.Module):
         self.linear = nn.Linear(self.degree, 1, bias=True)
 
     def forward(self, x):
-        x = torch.stack([x**2, x], dim=1)
+        x = torch.stack([x**i for i in range(self.degree, 0, -1)], dim=1)
         out = self.linear(x)
         return out
 
 
-def generate_data(alpha: int, beta: int, gamma: int, num_examples: int): 
-    X = torch.linspace(-10, 10, num_examples)
-    y = alpha * X**2 + beta * X + gamma
-    y += torch.normal(0, 1.0, y.shape)
+def generate_data(num_examples: int): 
+    X = torch.linspace(-3, 0, num_examples)
+    y = X**3 + 5*X**2 + 7*X + 2
+    y += torch.normal(0, 0.1, y.shape)
     return X, y.view(-1, 1)
 
 
@@ -32,7 +32,7 @@ def get_dataloader(data_arrays, batch_size, shuffle):
 
 def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int, visu: bool=True):
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.0001)
+    optimizer = optim.SGD(model.parameters(), lr=0.00001, momentum=0.99)
 
     for epoch in range(epochs):
         # Train loop
@@ -61,19 +61,20 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
 
 
 if __name__ == '__main__':
-    alpha, beta, gamma = 2, -10, -2
-    batch_size, epochs = 16, 50
+    batch_size, epochs = 16, 1000
     num_train_examples = 256
+    num_val_examples = batch_size
+    polynom_degree = 3
     visu = True
     # Training data
-    X_train, y_train = generate_data(alpha, beta, gamma, num_train_examples)
+    X_train, y_train = generate_data(num_train_examples)
     train_dataloader = get_dataloader((X_train, y_train), batch_size, True)
 
     # Validation data
-    X_val, y_val = generate_data(alpha, beta, gamma, batch_size)
+    X_val, y_val = generate_data(num_val_examples)
     val_dataloader = get_dataloader((X_val, y_val), batch_size, False)
 
-    model = PolynomialRegressionModel(2)
+    model = PolynomialRegressionModel(degree=polynom_degree)
     train(model, train_dataloader, val_dataloader, epochs=epochs, visu=visu)
 
     print(f"predicted alpha = {model.linear.weight.data}")
