@@ -11,6 +11,14 @@
             "program": "linear_regression.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Polynomial Regression",
+            "type": "python",
+            "request": "launch",
+            "program": "polynomial_regression.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
