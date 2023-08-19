@@ -19,6 +19,14 @@
             "program": "polynomial_regression.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Logistic Regression",
+            "type": "python",
+            "request": "launch",
+            "program": "logistic_regression.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

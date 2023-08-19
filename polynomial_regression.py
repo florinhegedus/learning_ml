@@ -19,9 +19,11 @@ class PolynomialRegressionModel(nn.Module):
 
 
 def generate_data(num_examples: int): 
-    X = torch.linspace(-3, 0, num_examples)
-    y = X**3 + 5*X**2 + 7*X + 2
-    y += torch.normal(0, 0.1, y.shape)
+    # X = torch.linspace(-4, 7, num_examples)
+    # y = X**3 - 4*X**2 + X + 5
+    X = torch.linspace(-4, 4, num_examples)
+    y = X**2 - 3*X + 2
+    y += torch.normal(0, 0.2, y.shape)
     return X, y.view(-1, 1)
 
 
@@ -32,7 +34,7 @@ def get_dataloader(data_arrays, batch_size, shuffle):
 
 def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int, visu: bool=True):
     criterion = nn.MSELoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.00001, momentum=0.99)
+    optimizer = optim.SGD(model.parameters(), lr=0.000001, momentum=0.99)
 
     for epoch in range(epochs):
         # Train loop
@@ -61,10 +63,10 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
 
 
 if __name__ == '__main__':
-    batch_size, epochs = 16, 1000
-    num_train_examples = 256
+    batch_size, epochs = 32, 100
+    num_train_examples = 512
     num_val_examples = batch_size
-    polynom_degree = 3
+    polynom_degree = 2
     visu = True
     # Training data
     X_train, y_train = generate_data(num_train_examples)
@@ -81,4 +83,4 @@ if __name__ == '__main__':
     print(f"predicted beta = {model.linear.bias.data.item()}")
 
     if visu:
-        create_video(epochs, fps=3)
+        create_video(epochs, fps=30)
