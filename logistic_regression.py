@@ -61,16 +61,16 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
                 y_pred_cls = (val_preds > 0.5).float()
                 accuracy = (y_pred_cls == y_val).float().mean()
 
-                visualize_points(X_val, y_val, epoch)
+                visualize_points(X_val, y_pred_cls, num_classes=2, epoch=epoch)
 
         val_loss /= len(val_dataloader)
-        print(f'epoch {epoch}: validation loss={val_loss}, accuracy: {accuracy.item()}')
+        print(f'epoch {epoch}: val loss={val_loss}, val accuracy: {accuracy.item()}')
 
 
 if __name__ == '__main__':
     batch_size = 16
     num_train_examples = 512
-    epochs = 10000
+    epochs = 10
 
     X_train, y_train = generate_data(num_train_examples)
     train_dataloader = get_dataloader((X_train, y_train), batch_size, shuffle=True)

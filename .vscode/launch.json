@@ -27,6 +27,14 @@
             "program": "logistic_regression.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Softmax Regression",
+            "type": "python",
+            "request": "launch",
+            "program": "softmax_regression.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

@@ -20,16 +20,14 @@ def save_image_at_epoch(model, X, y, epoch):
     plt.close()
 
 
-def visualize_points(points, labels, epoch):
-    # Separate the points based on class labels
-    class_0_points = points[labels.squeeze() == 0]
-    class_1_points = points[labels.squeeze() == 1]
+def visualize_points(points, pred_labels, num_classes, epoch):
+    colors = ['red', 'green', 'blue', 'yellow']
+    for i in range(num_classes):
+        # Separate the points based on class labels
+        class_points = points[pred_labels.squeeze() == i]
 
-    # Plot the points for class 0
-    plt.scatter(class_0_points[:, 0], class_0_points[:, 1], c='red', s=5, label='Class 0')
-
-    # Plot the points for class 1
-    plt.scatter(class_1_points[:, 0], class_1_points[:, 1], c='blue', s=5, label='Class 1')
+        # Plot the points for class 0
+        plt.scatter(class_points[:, 0], class_points[:, 1], c=colors[i], s=5, label=f'Class {i}')
 
     plt.xlabel('X')
     plt.ylabel('Y')
