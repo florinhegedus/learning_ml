@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
-from utils import visualize_points
+from utils import visualize_points, create_video
 
 
 class LogisticRegressionModel(nn.Module):
@@ -38,7 +38,7 @@ def get_dataloader(data_arrays, batch_size, shuffle):
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
 
-def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int):
+def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int, visu: bool):
     criterion = nn.BCELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.0001, momentum=0.99)
 
@@ -61,7 +61,8 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
                 y_pred_cls = (val_preds > 0.5).float()
                 accuracy = (y_pred_cls == y_val).float().mean()
 
-                visualize_points(X_val, y_pred_cls, num_classes=2, epoch=epoch)
+                if visu:
+                    visualize_points(X_val, y_pred_cls, num_classes=2, epoch=epoch)
 
         val_loss /= len(val_dataloader)
         print(f'epoch {epoch}: val loss={val_loss}, val accuracy: {accuracy.item()}')
@@ -71,6 +72,7 @@ if __name__ == '__main__':
     batch_size = 16
     num_train_examples = 512
     epochs = 10
+    visu = True
 
     X_train, y_train = generate_data(num_train_examples)
     train_dataloader = get_dataloader((X_train, y_train), batch_size, shuffle=True)
@@ -79,5 +81,8 @@ if __name__ == '__main__':
     val_dataloader = get_dataloader((X_val, y_val), batch_size, shuffle=False)
 
     model = LogisticRegressionModel()
-    train(model, train_dataloader, val_dataloader, epochs)
+    train(model, train_dataloader, val_dataloader, epochs, visu)
+
+    if visu:
+        create_video(epochs, fps=30)
 

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import TensorDataset, DataLoader
-from utils import visualize_points
+from utils import visualize_points, create_video
 
 
 class SoftmaxRegressionModel(nn.Module):
@@ -48,8 +48,8 @@ def get_dataloader(data_tensors, batch_size, shuffle):
     return DataLoader(dataset, batch_size, shuffle)
 
 
-def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int):
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.00001, momentum=0.99)
+def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLoader, epochs: int, visu: bool):
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.00005, momentum=0.99)
     criterion = torch.nn.CrossEntropyLoss()
 
     for epoch in range(epochs):
@@ -75,7 +75,8 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
                 y_val = torch.argmax(y_val, dim=1)
                 correct += (predictions == y_val).sum().item()
 
-                visualize_points(X_val, predictions, num_classes=4, epoch=epoch)
+                if visu:
+                    visualize_points(X_val, predictions, num_classes=4, epoch=epoch)
 
         val_loss /= len(val_dataloader)
         accuracy = correct / len(val_dataloader.dataset)
@@ -83,10 +84,11 @@ def train(model: nn.Module, train_dataloader: DataLoader, val_dataloader: DataLo
 
 
 if __name__ == '__main__':
-    num_samples = 1024
-    batch_size = 64
-    epochs = 1000
+    num_samples = 32
+    batch_size = 16
+    epochs = 250
     num_classes = 4
+    visu = True
 
     X_train, y_train = generate_data(num_samples)
     train_dataloader = get_dataloader((X_train, y_train), batch_size, shuffle=True)
@@ -96,4 +98,7 @@ if __name__ == '__main__':
 
     model = SoftmaxRegressionModel(num_classes)
 
-    train(model, train_dataloader, val_dataloader, epochs)
+    train(model, train_dataloader, val_dataloader, epochs, visu)
+
+    if visu:
+        create_video(epochs, fps=30)
