@@ -35,6 +35,14 @@
             "program": "softmax_regression.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Naive Bayes",
+            "type": "python",
+            "request": "launch",
+            "program": "naive_bayes.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
