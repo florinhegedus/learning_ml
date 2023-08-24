@@ -7,4 +7,5 @@ I studied the algorithms in the following order:
 * logistic regression
 * softmax regression
 * naive bayes
+* gaussian naive bayes
 

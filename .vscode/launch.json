@@ -43,6 +43,14 @@
             "program": "naive_bayes.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: Gaussian Naive Bayes",
+            "type": "python",
+            "request": "launch",
+            "program": "gaussian_naive_bayes.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
