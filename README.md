@@ -6,4 +6,5 @@ I studied the algorithms in the following order:
 * polynomial regression
 * logistic regression
 * softmax regression
+* naive bayes
 
