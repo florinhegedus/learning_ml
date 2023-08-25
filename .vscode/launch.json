@@ -51,6 +51,14 @@
             "program": "gaussian_naive_bayes.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: SVM",
+            "type": "python",
+            "request": "launch",
+            "program": "support_vector_machine.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

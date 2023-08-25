@@ -1,4 +1,2 @@
-naive bayes
-gaussian naive bayes
 support vector machine
 random forrest
