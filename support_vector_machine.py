@@ -1,64 +1,60 @@
+import matplotlib.pyplot as plt
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
 from sklearn.datasets import make_blobs
 
 
-class SVM(nn.Module):
-    def __init__(self, input_dim, C=1.0):
-        super(SVM, self).__init__()
-        self.fc = nn.Linear(input_dim, 1)
-        self.C = C
+class LinearSVM:
+    def __init__(self, learning_rate=0.001, lambda_param=0.01, n_iters=1000):
+        self.lr = learning_rate
+        self.lambda_param = lambda_param
+        self.n_iters = n_iters
+        self.w = None
+        self.b = None
 
-    def forward(self, x):
-        return self.fc(x)
+    def fit(self, X, y):
+        y_ = np.where(y <= 0, -1, 1)
+        n_samples, n_features = X.shape
 
-    def fit(self, X, y, epochs=100, lr=0.00001):
-        optimizer = optim.SGD(self.parameters(), lr=lr)
-        for epoch in range(epochs):
-            optimizer.zero_grad()
-            outputs = self(X)
-            loss = self.hinge_loss(outputs, y)
-            if epoch % 100 == 0:
-                print(f"{epoch}: loss={loss}")
-            loss.backward()
-            optimizer.step()
+        self.w = np.zeros(n_features)
+        self.b = 0
+
+        for _ in range(self.n_iters):
+            for idx, x_i in enumerate(X):
+                condition = y_[idx] * (np.dot(x_i, self.w) - self.b) >= 1
+                if condition:
+                    self.w -= self.lr * (2 * self.lambda_param * self.w)
+                else:
+                    self.w -= self.lr * (2 * self.lambda_param * self.w - np.dot(x_i, y_[idx]))
+                    self.b -= self.lr * y_[idx]
 
     def predict(self, X):
-        with torch.no_grad():
-            outputs = self(X)
-        return torch.sign(outputs)
+        approx = np.dot(X, self.w) - self.b
+        return np.sign(approx)
 
-    def hinge_loss(self, outputs, y):
-        return torch.mean(torch.clamp(1 - outputs.t() * y, min=0)) + self.C * torch.norm(self.fc.weight)**2
-    
 
-def get_data():
-    # Generate data
+if __name__ == '__main__':
+    # Generate linearly separable data
     X, y = make_blobs(n_samples=100, centers=2, random_state=6)
 
     # Convert labels from {0, 1} to {-1, 1} for SVM
     y = 2*y - 1
 
-    # Convert data to tensors for PyTorch SVM
-    X = torch.FloatTensor(X)
-    y = torch.FloatTensor(y).view(-1, 1)
+    # Train the SVM
+    clf = LinearSVM()
+    clf.fit(X, y)
 
-    return X, y
+    # Predict
+    predictions = clf.predict(X)
 
+    # Calculate accuracy
+    accuracy = np.mean(y == predictions)
+    print(f"Accuracy: {accuracy*100:.2f}%")
 
-def accuracy(predictions, true_labels):
-    correct = torch.sum(predictions == true_labels)
-    total = len(true_labels)
-    return correct / total
-
-
-if __name__ == '__main__':
-    X, y = get_data()
-    svm = SVM(input_dim=2)
-    svm.fit(X, y, epochs=10000)
-    predictions = svm.predict(X)
-    acc = accuracy(predictions, y)
-
-    print(f"Accuracy: {acc * 100:.2f}%")
+    # Plotting the decision boundary
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='rainbow')
+    ax = plt.gca()
+    xlim = ax.get_xlim()
+    xx = np.linspace(xlim[0], xlim[1])
+    yy = -clf.w[0] / clf.w[1] * xx + (clf.b / clf.w[1])
+    plt.plot(xx, yy, 'k-')
+    plt.show()
