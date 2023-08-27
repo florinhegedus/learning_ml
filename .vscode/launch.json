@@ -59,6 +59,14 @@
             "program": "support_vector_machine.py",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Python: KNN",
+            "type": "python",
+            "request": "launch",
+            "program": "k_nearest_neighbor.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

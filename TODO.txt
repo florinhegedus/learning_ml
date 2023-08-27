@@ -1,3 +1,2 @@
 random forrest
-k-nearest neighbor
 ID3, decision tree

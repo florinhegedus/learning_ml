@@ -8,4 +8,6 @@ I studied the algorithms in the following order:
 * softmax regression
 * naive bayes
 * gaussian naive bayes
+* support vector machine
+* k-nearest neighbors
 
